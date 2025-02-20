@@ -434,9 +434,9 @@ class CapabilityServer(object):
                     spec_index.remove_provider(provider.name)
         self.__spec_index = spec_index
         # Prune spec_file_index
-        spec_paths = spec_index.interface_paths.values() + \
-            spec_index.semantic_interface_paths.values() + \
-            spec_index.provider_paths.values()
+        spec_paths = list(spec_index.interface_paths.values()) + \
+            list(spec_index.semantic_interface_paths.values()) + \
+            list(spec_index.provider_paths.values())
         for package_name, package_dict in self.spec_file_index.items():
             for spec_type in ['capability_interface', 'semantic_capability_interface', 'capability_provider']:
                 package_dict[spec_type][:] = [path for path in package_dict[spec_type] if path in spec_paths]
@@ -685,7 +685,7 @@ class CapabilityServer(object):
         return providers  # Could be empty
 
     def __start_capability(self, capability, preferred_provider):
-        if capability not in self.__spec_index.interfaces.keys() + self.__spec_index.semantic_interfaces.keys():
+        if capability not in list(self.__spec_index.interfaces.keys()) + list(self.__spec_index.semantic_interfaces.keys()):
             raise RuntimeError("Capability '{0}' not found.".format(capability))
         # If no preferred provider is given, use the default
         preferred_provider = preferred_provider or self.__default_providers[capability]
